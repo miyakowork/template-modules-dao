@@ -1,7 +1,7 @@
 package me.wuwenbin.dao.sql.entrance;
 
-import me.wuwenbin.dao.sql.factory.SQLBeanBuilder;
 import me.wuwenbin.dao.sql.factory.SQLStrBuilder;
+import me.wuwenbin.dao.sql.factory.SQLBeanBuilder;
 
 /**
  * entrance for sql util

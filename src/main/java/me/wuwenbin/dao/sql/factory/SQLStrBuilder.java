@@ -2,8 +2,8 @@ package me.wuwenbin.dao.sql.factory;
 
 import me.wuwenbin.dao.sql.exception.DeleteSQLConditionsNullException;
 import me.wuwenbin.dao.sql.exception.InsertColumnNullException;
-import me.wuwenbin.dao.sql.exception.TableNameNullException;
 import me.wuwenbin.dao.sql.exception.UpdateColumnNullException;
+import me.wuwenbin.dao.sql.exception.TableNameNullException;
 import me.wuwenbin.dao.sql.util.SQLBuilderUtils;
 
 /**

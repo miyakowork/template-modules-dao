@@ -1,4 +1,4 @@
-package me.wuwenbin;
+package me.wuwebin.dao.test;
 
 import com.sun.tools.jdi.LinkedHashMap;
 import me.wuwenbin.dao.annotation.DynamicDataSource;

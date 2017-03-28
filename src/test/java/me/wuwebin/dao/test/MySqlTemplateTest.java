@@ -1,4 +1,4 @@
-package me.wuwenbin;
+package me.wuwebin.dao.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

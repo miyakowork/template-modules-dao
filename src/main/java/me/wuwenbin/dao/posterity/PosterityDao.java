@@ -30,7 +30,7 @@ import java.util.Map;
  * Created by wuwenbin on 2017/1/1.
  *
  * @author wuwenbin
- * @see me.wuwenbin.dao.ancestor.AncestorDao
+ * @see AncestorDao
  * @since 1.0.0
  */
 public abstract class PosterityDao implements AncestorDao {

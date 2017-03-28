@@ -1,10 +1,10 @@
 package me.wuwenbin.dao.sql.factory;
 
-import me.wuwenbin.dao.sql.annotations.SQLColumn;
-import me.wuwenbin.dao.sql.annotations.SQLTable;
+import me.wuwenbin.dao.sql.exception.*;
 import me.wuwenbin.dao.sql.util.SQLBuilderUtils;
 import me.wuwenbin.dao.sql.util.SQLDefineUtils;
-import me.wuwenbin.dao.sql.exception.*;
+import me.wuwenbin.dao.sql.annotations.SQLColumn;
+import me.wuwenbin.dao.sql.annotations.SQLTable;
 
 import java.lang.reflect.Field;
 
