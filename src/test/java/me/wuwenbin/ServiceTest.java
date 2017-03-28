@@ -1,5 +1,6 @@
 package me.wuwenbin;
 
+import com.sun.tools.jdi.LinkedHashMap;
 import me.wuwenbin.dao.annotation.DynamicDataSource;
 import me.wuwenbin.dao.factory.DaoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class ServiceTest {
 
     @Autowired
-    DaoFactory daoFactory;
+    private DaoFactory daoFactory;
 
     public void findAcglibraryUsers() {
         List<Map<String, Object>> list = daoFactory.dynamicDao.findListMapByArray("select * from t_system_user");
@@ -33,10 +34,16 @@ public class ServiceTest {
         }
     }
 
-    @Transactional(value = "remoteManager")
+    @Transactional(value = "locationManager")
     public void testTransaction() throws Exception {
-        String updateSQL = "update t_system_user set user_name = ? where  user_id = ?";
-        daoFactory.defaultDao.executeArray(updateSQL, "u9876543210", 15);
+        String updateSQL = "update t_system_user set user_name = :userName where  user_id = :userId";
+        Map<String, Object> map = new LinkedHashMap();
+        map.put("userName", "eeeeeeeeeee");
+        map.put("userId", 13);
+        Map<String, Object> map2 = new LinkedHashMap();
+        map2.put("userName", "ffffffffff");
+        map2.put("userId", 14);
+        daoFactory.defaultDao.executeBatchByArrayMaps(updateSQL, map, map2);
         String insertSQL = "insert t_system_user(user_name) values(?)";
         daoFactory.defaultDao.executeArray(insertSQL, "u03271549");
     }

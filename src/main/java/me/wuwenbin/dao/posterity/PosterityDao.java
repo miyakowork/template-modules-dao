@@ -221,7 +221,6 @@ public abstract class PosterityDao implements AncestorDao {
         return null;
     }
 
-    @SafeVarargs
     @Override
     public int[] executeBatchByArrayBeans(String sql, Object... beanParameters) throws Exception {
         Assert.hasText(sql, "sql语句不正确!");
