@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+       default-lazy-init="false">
+
+    <!--spring-framework版本需要在4.1.7.RELEASE以上-->
+
+    <!--两2个数据源示例配置-->
+    <bean id="localhostDs" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close"
+          p:driverClassName="com.mysql.jdbc.Driver"
+          p:url="jdbc:mysql://127.0.0.1:3306/acglibrary?characterEncoding=UTF-8"
+          p:username="root"
+          p:password="547521014"
+          p:initialSize="10"
+          p:maxActive="20"
+          p:minIdle="3"
+          p:timeBetweenEvictionRunsMillis="60000"
+          p:validationQuery="SELECT 1"/>
+
+    <bean id="remoteDs" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close"
+          p:driverClassName="com.mysql.jdbc.Driver"
+          p:url="jdbc:mysql://127.0.0.1:3306/cqssc?characterEncoding=UTF-8"
+          p:username="root"
+          p:password="547521014"
+          p:initialSize="10"
+          p:maxActive="20"
+          p:minIdle="3"
+          p:timeBetweenEvictionRunsMillis="60000"
+          p:validationQuery="SELECT 1"/>
+
+    <bean id="localhost" class="me.wuwenbin.dao.factory.business.DataSourceX">
+        <property name="dataSource" ref="localhostDs"/>
+        <property name="initDbType" value="Mysql"/>
+    </bean>
+    <bean id="remote" class="me.wuwenbin.dao.factory.business.DataSourceX">
+        <property name="dataSource" ref="remoteDs"/>
+        <property name="initDbType" value="Mysql"/>
+    </bean>
+
+    <context:annotation-config/>
+    <context:component-scan base-package="me.wuwenbin"/>
+
+    <!--多数据源工厂配置-->
+    <bean id="daoFactory" class="me.wuwenbin.dao.factory.DaoFactory">
+        <property name="dataSourceMap">
+            <map key-type="java.lang.String">
+                <entry key="localhost" value-ref="localhost"/>
+                <entry key="remote" value-ref="remote"/>
+            </map>
+        </property>
+        <property name="defaultDao" ref="localhost"/>
+    </bean>
+
+    <!--切换多数据源需要用到AOP-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <tx:annotation-driven proxy-target-class="true"/>
+
+    <!--多数据源的单独事务配置,联合事务暂时处理不了-->
+    <bean id="locationManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="localhostDs"/>
+    </bean>
+    <!--多个数据源使用@Transaction("transactionManager2")-->
+    <bean id="remoteManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="remoteDs"/>
+    </bean>
+
+</beans>
