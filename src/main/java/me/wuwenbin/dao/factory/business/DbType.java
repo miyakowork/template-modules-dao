@@ -8,5 +8,6 @@ package me.wuwenbin.dao.factory.business;
 public enum DbType {
     Mysql,
     H2,
-    Oracle
+    Oracle,
+    Sqlite
 }

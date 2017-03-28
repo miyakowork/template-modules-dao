@@ -7,6 +7,7 @@ import me.wuwenbin.dao.factory.business.DbType;
 import me.wuwenbin.dao.posterity.h2.H2Template;
 import me.wuwenbin.dao.posterity.mysql.MysqlTemplate;
 import me.wuwenbin.dao.posterity.oracle.OracleTemplate;
+import me.wuwenbin.dao.posterity.sqlite.SqliteTemplate;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;
@@ -57,6 +58,8 @@ public class DaoFactory implements InitializingBean {
             this.defaultDao = new H2Template(dataSourceX.getDataSource());
         } else if (dataSourceX.getInitDbType() == DbType.Oracle) {
             this.defaultDao = new OracleTemplate(dataSourceX.getDataSource());
+        } else if (dataSourceX.getInitDbType() == DbType.Sqlite) {
+            this.defaultDao = new SqliteTemplate(dataSourceX.getDataSource());
         } else {
             this.defaultDao = new MysqlTemplate(dataSourceX.getDataSource());
         }
@@ -96,6 +99,8 @@ public class DaoFactory implements InitializingBean {
                 return new H2Template(dataSourceX.getDataSource());
             } else if (dataSourceX.getInitDbType() == DbType.Oracle) {
                 return new OracleTemplate(dataSourceX.getDataSource());
+            } else if (dataSourceX.getInitDbType() == DbType.Sqlite) {
+                return new SqliteTemplate(dataSourceX.getDataSource());
             } else {
                 return new MysqlTemplate(dataSourceX.getDataSource());
             }
