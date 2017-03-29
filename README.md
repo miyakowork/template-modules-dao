@@ -1,6 +1,8 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.3.1更新日志
+- 把sql部分单独提出作为utils子项目，命名为template-utils-sql
 #### 1.3.0更新日志
 - 更改多数据源注释方式，增加type参数
 - 增加多种数据库支持，目前支持mysql、h2、oracle、sqlite
