@@ -17,7 +17,7 @@ template-projects中的关系型数据库dao部分封装
 #### 1.0.0发布日志
 - 初始版本发布
 ## 开始使用 ##
-> maven 坐标  最新版本号请至中央仓库查询 当前 ```1.3.0```（2017年3月28日）
+> maven 坐标  最新版本号请至中央仓库查询 当前 ```1.3.1```（2017年3月29日）
 ```xml
 <dependency>
   <groupId>me.wuwenbin</groupId>
