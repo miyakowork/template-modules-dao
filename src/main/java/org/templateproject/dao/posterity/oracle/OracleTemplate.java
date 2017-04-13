@@ -1,6 +1,6 @@
-package me.wuwenbin.dao.posterity.sqlite;
+package org.templateproject.dao.posterity.oracle;
 
-import me.wuwenbin.dao.posterity.PosterityDao;
+import org.templateproject.dao.posterity.PosterityDao;
 import me.wuwenbin.pojo.page.Page;
 import org.springframework.util.Assert;
 
@@ -9,32 +9,35 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * the implements of sqlite
+ * the implement of oracle
+ * <p>
  * Created by wuwenbin on 2017/3/27.
  */
-public class SqliteTemplate extends PosterityDao {
-    public SqliteTemplate(DataSource dataSource) {
+public class OracleTemplate extends PosterityDao {
+    public OracleTemplate(DataSource dataSource) {
         super(dataSource);
     }
 
-    private static String getSqlOfSqlite(final String sql, Page page) {
-        String querySql = sql;
+    private static String getSqlOfOracle(final String sql, Page page) {
         if (page.isFirstSetted() && page.isPageSizeSetted()) {
-            querySql = querySql.concat(" LIMIT " + page.getPageSize() + " OFFSET " + page.getFirst());
+            String querySqlFirst = "SELECT * FROM ( SELECT tempt.*,ROWNUM rn FROM ( ";
+            String querySqlLast = " ) tempt WHERE ROWNUM<=" + page.getFirst() + page.getPageSize() + " ) WHERE rn>" + page.getFirst();
+            return querySqlFirst.concat(sql.concat(querySqlLast));
+        } else {
+            return sql;
         }
-        return querySql;
     }
 
     @Override
     public Page findPageListMapByArray(String sql, Page page, Object... arrayParameters) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count;
+        long count = 0;
         if (page.isAutoCount()) {
             count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
             page.setTotalCount((int) count);
         }
-        List list = findListMapByArray(getSqlOfSqlite(sql, page), arrayParameters);
+        List list = findListMapByArray(getSqlOfOracle(sql, page), arrayParameters);
         page.setResult(list);
         return page;
     }
@@ -43,12 +46,12 @@ public class SqliteTemplate extends PosterityDao {
     public Page findPageListMapByMap(String sql, Page page, Map<String, Object> mapParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count;
+        long count = 0;
         if (page.isAutoCount()) {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListMapByMap(getSqlOfSqlite(sql, page), mapParameter);
+        List list = findListMapByMap(getSqlOfOracle(sql, page), mapParameter);
         page.setResult(list);
         return page;
     }
@@ -62,7 +65,7 @@ public class SqliteTemplate extends PosterityDao {
             count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByArray(getSqlOfSqlite(sql, page), clazz, arrayParameters);
+        List list = findListBeanByArray(getSqlOfOracle(sql, page), clazz, arrayParameters);
         page.setResult(list);
         return page;
     }
@@ -71,12 +74,12 @@ public class SqliteTemplate extends PosterityDao {
     public <T> Page findPageListBeanByMap(String sql, Class<T> clazz, Page page, Map<String, Object> mapParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count;
+        long count = 0;
         if (page.isAutoCount()) {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByMap(getSqlOfSqlite(sql, page), clazz, mapParameter);
+        List list = findListBeanByMap(getSqlOfOracle(sql, page), clazz, mapParameter);
         page.setResult(list);
         return page;
     }
@@ -85,12 +88,12 @@ public class SqliteTemplate extends PosterityDao {
     public <T> Page findPageListBeanByBean(String sql, Class<T> clazz, Page page, Object beanParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count;
+        long count = 0;
         if (page.isAutoCount()) {
             count = queryNumberByBean(getCountSql(sql), Long.class, beanParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByBean(getSqlOfSqlite(sql, page), clazz, beanParameter);
+        List list = findListBeanByBean(getSqlOfOracle(sql, page), clazz, beanParameter);
         page.setResult(list);
         return page;
     }

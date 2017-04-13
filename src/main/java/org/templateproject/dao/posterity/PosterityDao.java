@@ -1,6 +1,6 @@
-package me.wuwenbin.dao.posterity;
+package org.templateproject.dao.posterity;
 
-import me.wuwenbin.dao.ancestor.AncestorDao;
+import org.templateproject.dao.ancestor.AncestorDao;
 import me.wuwenbin.pojo.page.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

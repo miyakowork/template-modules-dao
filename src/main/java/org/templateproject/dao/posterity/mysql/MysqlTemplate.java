@@ -1,6 +1,6 @@
-package me.wuwenbin.dao.posterity.mysql;
+package org.templateproject.dao.posterity.mysql;
 
-import me.wuwenbin.dao.posterity.PosterityDao;
+import org.templateproject.dao.posterity.PosterityDao;
 import me.wuwenbin.pojo.page.Page;
 import org.springframework.util.Assert;
 

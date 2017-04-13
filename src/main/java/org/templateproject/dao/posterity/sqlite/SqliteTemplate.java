@@ -1,6 +1,6 @@
-package me.wuwenbin.dao.posterity.h2;
+package org.templateproject.dao.posterity.sqlite;
 
-import me.wuwenbin.dao.posterity.PosterityDao;
+import org.templateproject.dao.posterity.PosterityDao;
 import me.wuwenbin.pojo.page.Page;
 import org.springframework.util.Assert;
 
@@ -9,19 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * the implements of h2
- * <p>
+ * the implements of sqlite
  * Created by wuwenbin on 2017/3/27.
  */
-public class H2Template extends PosterityDao {
-    public H2Template(DataSource dataSource) {
+public class SqliteTemplate extends PosterityDao {
+    public SqliteTemplate(DataSource dataSource) {
         super(dataSource);
     }
 
-    private static String getSqlOfH2(final String sql, Page page) {
+    private static String getSqlOfSqlite(final String sql, Page page) {
         String querySql = sql;
         if (page.isFirstSetted() && page.isPageSizeSetted()) {
-            querySql = querySql.concat(" LIMIT " + page.getFirst() + "," + page.getPageSize());
+            querySql = querySql.concat(" LIMIT " + page.getPageSize() + " OFFSET " + page.getFirst());
         }
         return querySql;
     }
@@ -35,7 +34,7 @@ public class H2Template extends PosterityDao {
             count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
             page.setTotalCount((int) count);
         }
-        List list = findListMapByArray(getSqlOfH2(sql, page), arrayParameters);
+        List list = findListMapByArray(getSqlOfSqlite(sql, page), arrayParameters);
         page.setResult(list);
         return page;
     }
@@ -49,7 +48,7 @@ public class H2Template extends PosterityDao {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListMapByMap(getSqlOfH2(sql, page), mapParameter);
+        List list = findListMapByMap(getSqlOfSqlite(sql, page), mapParameter);
         page.setResult(list);
         return page;
     }
@@ -63,7 +62,7 @@ public class H2Template extends PosterityDao {
             count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByArray(getSqlOfH2(sql, page), clazz, arrayParameters);
+        List list = findListBeanByArray(getSqlOfSqlite(sql, page), clazz, arrayParameters);
         page.setResult(list);
         return page;
     }
@@ -77,7 +76,7 @@ public class H2Template extends PosterityDao {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByMap(getSqlOfH2(sql, page), clazz, mapParameter);
+        List list = findListBeanByMap(getSqlOfSqlite(sql, page), clazz, mapParameter);
         page.setResult(list);
         return page;
     }
@@ -91,7 +90,7 @@ public class H2Template extends PosterityDao {
             count = queryNumberByBean(getCountSql(sql), Long.class, beanParameter);
             page.setTotalCount((int) count);
         }
-        List list = findListBeanByBean(getSqlOfH2(sql, page), clazz, beanParameter);
+        List list = findListBeanByBean(getSqlOfSqlite(sql, page), clazz, beanParameter);
         page.setResult(list);
         return page;
     }

@@ -1,8 +1,8 @@
-package me.wuwenbin.dao.aop;
+package org.templateproject.dao.aop;
 
-import me.wuwenbin.dao.exception.DataSourceKeyNotExistException;
-import me.wuwenbin.dao.annotation.DynamicDataSource;
-import me.wuwenbin.dao.factory.DaoFactory;
+import org.templateproject.dao.exception.DataSourceKeyNotExistException;
+import org.templateproject.dao.annotation.DynamicDataSource;
+import org.templateproject.dao.factory.DaoFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,7 +35,7 @@ public class DataSourceAspect {
     /**
      * define point aspect,if a method has {@link DynamicDataSource} annotation,it starts aop method to filter it
      */
-    @Pointcut("@annotation(me.wuwenbin.dao.annotation.DynamicDataSource)")
+    @Pointcut("@annotation(org.templateproject.dao.annotation.DynamicDataSource)")
     public void DynamicDataSourceAspect() {
     }
 

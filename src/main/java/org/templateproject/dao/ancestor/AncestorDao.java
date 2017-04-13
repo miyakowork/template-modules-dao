@@ -1,4 +1,4 @@
-package me.wuwenbin.dao.ancestor;
+package org.templateproject.dao.ancestor;
 
 import me.wuwenbin.pojo.page.Page;
 import org.springframework.jdbc.core.JdbcTemplate;

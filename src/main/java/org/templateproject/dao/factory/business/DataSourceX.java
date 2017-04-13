@@ -1,4 +1,4 @@
-package me.wuwenbin.dao.factory.business;
+package org.templateproject.dao.factory.business;
 
 import javax.sql.DataSource;
 

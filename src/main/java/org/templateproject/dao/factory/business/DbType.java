@@ -1,4 +1,4 @@
-package me.wuwenbin.dao.factory.business;
+package org.templateproject.dao.factory.business;
 
 /**
  * the type of database
@@ -9,5 +9,6 @@ public enum DbType {
     Mysql,
     H2,
     Oracle,
-    Sqlite
+    Sqlite,
+    Postgresql
 }

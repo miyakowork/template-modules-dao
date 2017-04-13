@@ -1,4 +1,4 @@
-package me.wuwenbin.dao.annotation;
+package org.templateproject.dao.annotation;
 
 import java.lang.annotation.*;
 

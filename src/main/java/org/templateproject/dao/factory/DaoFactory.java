@@ -1,13 +1,15 @@
-package me.wuwenbin.dao.factory;
+package org.templateproject.dao.factory;
 
-import me.wuwenbin.dao.ancestor.AncestorDao;
-import me.wuwenbin.dao.exception.DataSourceKeyNotExistException;
-import me.wuwenbin.dao.factory.business.DataSourceX;
-import me.wuwenbin.dao.posterity.h2.H2Template;
-import me.wuwenbin.dao.posterity.sqlite.SqliteTemplate;
-import me.wuwenbin.dao.factory.business.DbType;
-import me.wuwenbin.dao.posterity.mysql.MysqlTemplate;
-import me.wuwenbin.dao.posterity.oracle.OracleTemplate;
+import org.springframework.stereotype.Component;
+import org.templateproject.dao.ancestor.AncestorDao;
+import org.templateproject.dao.exception.DataSourceKeyNotExistException;
+import org.templateproject.dao.factory.business.DataSourceX;
+import org.templateproject.dao.posterity.h2.H2Template;
+import org.templateproject.dao.posterity.postgresql.PostgreSqlTemplate;
+import org.templateproject.dao.posterity.sqlite.SqliteTemplate;
+import org.templateproject.dao.factory.business.DbType;
+import org.templateproject.dao.posterity.mysql.MysqlTemplate;
+import org.templateproject.dao.posterity.oracle.OracleTemplate;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import java.util.Map;
  * @author wuwenbin
  * @since 1.0.0
  */
+@Component
 public class DaoFactory implements InitializingBean {
 
     /**
@@ -60,6 +63,8 @@ public class DaoFactory implements InitializingBean {
             this.defaultDao = new OracleTemplate(dataSourceX.getDataSource());
         } else if (dataSourceX.getInitDbType() == DbType.Sqlite) {
             this.defaultDao = new SqliteTemplate(dataSourceX.getDataSource());
+        } else if (dataSourceX.getInitDbType() == DbType.Postgresql) {
+            this.defaultDao = new PostgreSqlTemplate(dataSourceX.getDataSource());
         } else {
             this.defaultDao = new MysqlTemplate(dataSourceX.getDataSource());
         }
@@ -86,9 +91,9 @@ public class DaoFactory implements InitializingBean {
     }
 
     /**
-     * get dao by key in xml you set just now
+     * get dao by key you set just now
      *
-     * @param #key the key of dataSource you set in xml
+     * @param #key the key of dataSource you set
      * @return {@link AncestorDao}
      * @throws DataSourceKeyNotExistException
      */
@@ -101,6 +106,8 @@ public class DaoFactory implements InitializingBean {
                 return new OracleTemplate(dataSourceX.getDataSource());
             } else if (dataSourceX.getInitDbType() == DbType.Sqlite) {
                 return new SqliteTemplate(dataSourceX.getDataSource());
+            } else if (dataSourceX.getInitDbType() == DbType.Postgresql) {
+                return new PostgreSqlTemplate(dataSourceX.getDataSource());
             } else {
                 return new MysqlTemplate(dataSourceX.getDataSource());
             }

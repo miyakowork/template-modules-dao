@@ -1,4 +1,4 @@
-package me.wuwenbin.dao.exception;
+package org.templateproject.dao.exception;
 
 /**
  * Check dataSource key is exist
