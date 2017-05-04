@@ -58,7 +58,12 @@ public class DaoFactory implements InitializingBean {
         this.dataSourceMap = dataSourceMap;
     }
 
-    public void setDefaultDao(DataSourceX dataSourceX) {
+    /**
+     * 线程同步即可，此方法是不会再程序运行中调用，初始化即调用
+     *
+     * @param dataSourceX
+     */
+    public synchronized void setDefaultDao(DataSourceX dataSourceX) {
         if (dataSourceX.getInitDbType() == DbType.H2) {
             this.defaultDao = new H2Template(dataSourceX.getDataSource());
         } else if (dataSourceX.getInitDbType() == DbType.Oracle) {
@@ -70,8 +75,7 @@ public class DaoFactory implements InitializingBean {
         } else {
             this.defaultDao = new MysqlTemplate(dataSourceX.getDataSource());
         }
-        threadDynamicDao.set(defaultDao);
-        this.dynamicDao = threadDynamicDao.get();
+        this.dynamicDao = this.defaultDao;
     }
 
 
