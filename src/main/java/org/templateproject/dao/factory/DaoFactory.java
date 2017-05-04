@@ -6,6 +6,7 @@ import org.templateproject.dao.ancestor.AncestorDao;
 import org.templateproject.dao.exception.DataSourceKeyNotExistException;
 import org.templateproject.dao.factory.business.DataSourceX;
 import org.templateproject.dao.factory.business.DbType;
+import org.templateproject.dao.factory.support.KeyContextHolder;
 import org.templateproject.dao.posterity.h2.H2Template;
 import org.templateproject.dao.posterity.mysql.MysqlTemplate;
 import org.templateproject.dao.posterity.oracle.OracleTemplate;
@@ -26,7 +27,6 @@ import java.util.Map;
 @Component
 public class DaoFactory implements InitializingBean {
 
-    private static final ThreadLocal<String> currentDynamicKey = new ThreadLocal<>();
     /**
      * multi datasource,including datasource and initDbType
      * using map to collect
@@ -85,7 +85,8 @@ public class DaoFactory implements InitializingBean {
      * @throws DataSourceKeyNotExistException
      */
     public synchronized void determineTargetDao() throws DataSourceKeyNotExistException {
-        this.dynamicDao = getAncestorDaoByKey(currentDynamicKey.get());
+        String currentThreadKey = KeyContextHolder.getKey();
+        this.dynamicDao = getAncestorDaoByKey(currentThreadKey);
     }
 
     /**

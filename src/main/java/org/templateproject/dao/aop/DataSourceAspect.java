@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.templateproject.dao.annotation.DynamicDataSource;
 import org.templateproject.dao.exception.DataSourceKeyNotExistException;
 import org.templateproject.dao.factory.DaoFactory;
+import org.templateproject.dao.factory.support.KeyContextHolder;
 
 import java.lang.reflect.Method;
 
@@ -31,8 +32,6 @@ public class DataSourceAspect {
 
     @Autowired
     DaoFactory daoFactory;
-
-    private static ThreadLocal<String> contextHolderKey = new ThreadLocal<>();
 
     /**
      * define point aspect,if a method has {@link DynamicDataSource} annotation,it starts aop method to filter it
@@ -56,7 +55,7 @@ public class DataSourceAspect {
         Method method = clazz.getMethod(methodName, argClass);
         if (method.isAnnotationPresent(DynamicDataSource.class)) {
             String dataSourceKey = method.getAnnotation(DynamicDataSource.class).value();
-            contextHolderKey.set(dataSourceKey);
+            KeyContextHolder.setKey(dataSourceKey);
             daoFactory.determineTargetDao();
         }
     }
@@ -75,9 +74,7 @@ public class DataSourceAspect {
         Method method = clazz.getMethod(methodName, argClass);
         if (method.isAnnotationPresent(DynamicDataSource.class)) {
             daoFactory.dynamicDao = daoFactory.defaultDao;
-            if (contextHolderKey != null && contextHolderKey.get() != null) {
-                contextHolderKey.remove();
-            }
+            KeyContextHolder.clearKey();
         }
     }
 }
