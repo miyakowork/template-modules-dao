@@ -2,7 +2,7 @@
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
 #### 1.6.2 更新日志
-- 使用ThreadLocal隔离多个线程会同时操作setDynamicDao的问题
+- 使用ThreadLocal隔离多个线程会同时操作setDynamicDao的问题.
 - 注释英文说明下：因为以前用的jdk8环境下的maven打包，中文注释会报错所以以前是全英文注释，后面换成jdk7环境下就不会有问题。
 - 以后注释会慢慢改回中文
 
