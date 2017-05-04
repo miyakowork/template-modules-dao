@@ -1,18 +1,18 @@
 package org.templateproject.dao.factory;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.templateproject.dao.ancestor.AncestorDao;
 import org.templateproject.dao.exception.DataSourceKeyNotExistException;
 import org.templateproject.dao.factory.business.DataSourceX;
-import org.templateproject.dao.posterity.h2.H2Template;
-import org.templateproject.dao.posterity.postgresql.PostgreSqlTemplate;
-import org.templateproject.dao.posterity.sqlite.SqliteTemplate;
 import org.templateproject.dao.factory.business.DbType;
+import org.templateproject.dao.posterity.h2.H2Template;
 import org.templateproject.dao.posterity.mysql.MysqlTemplate;
 import org.templateproject.dao.posterity.oracle.OracleTemplate;
-import org.springframework.beans.factory.InitializingBean;
+import org.templateproject.dao.posterity.postgresql.PostgreSqlTemplate;
+import org.templateproject.dao.posterity.sqlite.SqliteTemplate;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -25,6 +25,8 @@ import java.util.Map;
  */
 @Component
 public class DaoFactory implements InitializingBean {
+
+    private static final ThreadLocal<AncestorDao> threadDynamicDao = new ThreadLocal<>();
 
     /**
      * multi datasource,including datasource and initDbType
@@ -43,7 +45,7 @@ public class DaoFactory implements InitializingBean {
     /**
      * generate <tt>daoMap</tt> by dataSources' map,the key refers to the key of dataSourceX
      */
-    public Map<String, AncestorDao> daoMap = new HashMap<>();
+    public Map<String, AncestorDao> daoMap = new Hashtable<>();
 
     /**
      * this default value is equals to defaultDao
@@ -68,11 +70,24 @@ public class DaoFactory implements InitializingBean {
         } else {
             this.defaultDao = new MysqlTemplate(dataSourceX.getDataSource());
         }
-        this.dynamicDao = this.defaultDao;
+        threadDynamicDao.set(defaultDao);
+        this.dynamicDao = threadDynamicDao.get();
     }
 
-    public void setDynamicDao(String key) throws DataSourceKeyNotExistException {
-        this.dynamicDao = getAncestorDaoByKey(key);
+
+    /**
+     * 根据当前线程中的变量来确定切换的dynamicDao
+     *
+     * @param key
+     * @return
+     * @throws DataSourceKeyNotExistException
+     */
+    public synchronized ThreadLocal<AncestorDao> setDynamicDao(String key) throws DataSourceKeyNotExistException {
+        if (threadDynamicDao.get() == null) {
+            threadDynamicDao.set(getAncestorDaoByKey(key));
+        }
+        this.dynamicDao = threadDynamicDao.get();
+        return threadDynamicDao;
     }
 
     /**

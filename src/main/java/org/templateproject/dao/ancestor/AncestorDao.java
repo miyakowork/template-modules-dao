@@ -47,9 +47,12 @@ public interface AncestorDao {
 
     /**
      * get object of current simpleJdbcInsert
+     * the property is not recommended,it could result in some problems that is not expected
+     * if you want to user generatedKey,we recommend to user {@link #getJdbcTemplateObj()}
      *
      * @return {@link org.springframework.jdbc.core.simple.SimpleJdbcInsert}
      */
+    @Deprecated
     SimpleJdbcInsert getSimpleJdbcInsertObj();
 
     /**
@@ -105,17 +108,21 @@ public interface AncestorDao {
 
     /**
      * <tt>INSERT</tt> values with returned <tt>PK</tt> value
+     * use {@link #insertBeanAutoGenKeyOut(String, Object)} to instead of this
      *
      * @param tableName     the name of table
      * @param keyName       the name of column increase automatically
      * @param beanParameter the object of bean(eg:the property:<tt>userName</tt> should correspond to <tt>user_name</tt>, for we are not suggest to use upper case)
      * @return {@link Long} the column which increase automatically
      * @throws Exception the message of insert exception
+     * @see {@link #insertBeanAutoGenKeyOut(String, Object)}
      */
+    @Deprecated
     long insertBeanGetGeneratedKey(String tableName, String keyName, Object beanParameter) throws Exception;
 
     /**
      * <tt>INSERT</tt> values with returned <tt>PK</tt> value
+     * use {@link #insertBeanAutoGenKeyOut(String, Object)} to instead
      *
      * @param tableName    the name of table
      * @param keyName      the name of column increase automatically
@@ -123,7 +130,44 @@ public interface AncestorDao {
      * @return {@link Long} the column which increase automatically
      * @throws Exception the message of insert exception
      */
+    @Deprecated
     long insertMapGetGeneratedKey(String tableName, String keyName, Map<String, Object> mapParameter) throws Exception;
+
+    /**
+     * 插入bean返回插入的影响条数
+     *
+     * @param sql
+     * @param beanParameter
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    <T> int insertBeanAutoGenKey(String sql, T beanParameter) throws Exception;
+
+    /**
+     * 插入bean返回插入的主键
+     *
+     * @param sql
+     * @param beanParameter
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    <T> long insertBeanAutoGenKeyOut(String sql, T beanParameter) throws Exception;
+
+    /**
+     * 插入一条bean记录，返回插入记录（含主键）
+     * 注：此方法要求主键列明必须为[id]
+     *
+     * @param insertSQL
+     * @param beaParameter
+     * @param clazz
+     * @param tableName
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    <T> T insertBeanAutoGenKeyOutBean(String insertSQL, T beaParameter, Class<T> clazz, String tableName) throws Exception;
 
     /**
      * execute method which is <tt>INSERT</tt> or <tt>UPDATE</tt> or <tt>DELETE</tt>

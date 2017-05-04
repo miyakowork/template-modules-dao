@@ -1,5 +1,6 @@
 package org.templateproject.dao.posterity;
 
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.templateproject.dao.ancestor.AncestorDao;
 import me.wuwenbin.pojo.page.Page;
 import org.slf4j.Logger;
@@ -40,8 +41,8 @@ public abstract class PosterityDao implements AncestorDao {
 
     protected JdbcTemplate jdbcTemplate;
     protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    protected SimpleJdbcInsert jdbcInsert;
     protected SimpleJdbcCall jdbcCall;
+    protected SimpleJdbcInsert jdbcInsert;
 
     public PosterityDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -104,6 +105,7 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
+    @Deprecated
     public SimpleJdbcInsert getSimpleJdbcInsertObj() {
         return this.jdbcInsert;
     }
@@ -147,6 +149,7 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
+    @Deprecated
     public long insertBeanGetGeneratedKey(String tableName, String keyName, Object beanParameter) throws Exception {
         Assert.notNull(tableName, "表名不能为空");
         Assert.notNull(keyName, "自增字段名称不能为空");
@@ -158,6 +161,34 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
+    public <T> int insertBeanAutoGenKey(String sql, T beanParameter) throws Exception {
+        Assert.hasText(sql, "sql语句不正确！");
+        Assert.notNull(beanParameter, "对象bean不能为空");
+        logger.info("SQL:" + sql);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        return namedParameterJdbcTemplate.update(sql, generateSqlParamSource(beanParameter), keyHolder);
+    }
+
+    @Override
+    public <T> long insertBeanAutoGenKeyOut(String sql, T beanParameter) throws Exception {
+        Assert.hasText(sql, "sql语句不正确！");
+        Assert.notNull(beanParameter, "对象bean不能为空");
+        logger.info("SQL:" + sql);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(sql, generateSqlParamSource(beanParameter), keyHolder);
+        return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public <T> T insertBeanAutoGenKeyOutBean(String insertSQL, T beaParameter, Class<T> clazz, String tableName) throws Exception {
+        long key = insertBeanAutoGenKeyOut(insertSQL, beaParameter);
+        String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
+        T bean = findBeanByArray(sql, clazz, key);
+        return bean;
+    }
+
+    @Override
+    @Deprecated
     public long insertMapGetGeneratedKey(String tableName, String keyName, Map<String, Object> mapParameter) throws Exception {
         Assert.notNull(tableName, "表名不能为空!");
         Assert.notNull(keyName, "自增字段名称不能为空!");

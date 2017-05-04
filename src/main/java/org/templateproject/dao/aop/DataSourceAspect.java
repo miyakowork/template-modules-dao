@@ -1,8 +1,5 @@
 package org.templateproject.dao.aop;
 
-import org.templateproject.dao.exception.DataSourceKeyNotExistException;
-import org.templateproject.dao.annotation.DynamicDataSource;
-import org.templateproject.dao.factory.DaoFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +9,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.templateproject.dao.ancestor.AncestorDao;
+import org.templateproject.dao.annotation.DynamicDataSource;
+import org.templateproject.dao.exception.DataSourceKeyNotExistException;
+import org.templateproject.dao.factory.DaoFactory;
 
 import java.lang.reflect.Method;
 
@@ -31,6 +32,8 @@ public class DataSourceAspect {
 
     @Autowired
     DaoFactory daoFactory;
+
+    private static ThreadLocal<AncestorDao> currentDynamicDao = null;
 
     /**
      * define point aspect,if a method has {@link DynamicDataSource} annotation,it starts aop method to filter it
@@ -54,7 +57,7 @@ public class DataSourceAspect {
         Method method = clazz.getMethod(methodName, argClass);
         if (method.isAnnotationPresent(DynamicDataSource.class)) {
             String dataSourceKey = method.getAnnotation(DynamicDataSource.class).value();
-            daoFactory.setDynamicDao(dataSourceKey);
+            currentDynamicDao = daoFactory.setDynamicDao(dataSourceKey);
         }
     }
 
@@ -72,6 +75,9 @@ public class DataSourceAspect {
         Method method = clazz.getMethod(methodName, argClass);
         if (method.isAnnotationPresent(DynamicDataSource.class)) {
             daoFactory.dynamicDao = daoFactory.defaultDao;
+            if (currentDynamicDao != null && currentDynamicDao.get() != null) {
+                currentDynamicDao.remove();
+            }
         }
     }
 }
