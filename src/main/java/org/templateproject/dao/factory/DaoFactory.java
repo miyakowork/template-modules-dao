@@ -26,8 +26,7 @@ import java.util.Map;
 @Component
 public class DaoFactory implements InitializingBean {
 
-    private static final ThreadLocal<AncestorDao> threadDynamicDao = new ThreadLocal<>();
-
+    private static final ThreadLocal<String> currentDynamicKey = new ThreadLocal<>();
     /**
      * multi datasource,including datasource and initDbType
      * using map to collect
@@ -82,16 +81,11 @@ public class DaoFactory implements InitializingBean {
     /**
      * 根据当前线程中的变量来确定切换的dynamicDao
      *
-     * @param key
      * @return
      * @throws DataSourceKeyNotExistException
      */
-    public synchronized ThreadLocal<AncestorDao> setDynamicDao(String key) throws DataSourceKeyNotExistException {
-        if (threadDynamicDao.get() == null) {
-            threadDynamicDao.set(getAncestorDaoByKey(key));
-        }
-        this.dynamicDao = threadDynamicDao.get();
-        return threadDynamicDao;
+    public synchronized void determineTargetDao() throws DataSourceKeyNotExistException {
+        this.dynamicDao = getAncestorDaoByKey(currentDynamicKey.get());
     }
 
     /**
@@ -119,6 +113,9 @@ public class DaoFactory implements InitializingBean {
     private AncestorDao getAncestorDaoByKey(String key) throws DataSourceKeyNotExistException {
         if (dataSourceMap.containsKey(key)) {
             DataSourceX dataSourceX = this.dataSourceMap.get(key);
+            if (dataSourceX == null || dataSourceX.getDataSource() == null) {
+                throw new IllegalStateException("不能以key [" + key + "] 来设置目标Dao");
+            }
             if (dataSourceX.getInitDbType() == DbType.H2) {
                 return new H2Template(dataSourceX.getDataSource());
             } else if (dataSourceX.getInitDbType() == DbType.Oracle) {
