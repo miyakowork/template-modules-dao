@@ -2,7 +2,7 @@
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
 #### 1.6.2.RELEASE
-- release版本发布
+- release版本发布 
 
 #### 1.6.2 更新日志
 - 使用ThreadLocal隔离多个线程会同时操作setDynamicDao的问题.
