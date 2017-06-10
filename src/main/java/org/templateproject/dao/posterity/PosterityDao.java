@@ -492,6 +492,35 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
+    public <T> T findBeanByBean(String sql, Class<T> clazz, Object beanParameter) {
+        try {
+            Assert.hasText(sql, "sql语句不正确！");
+            Assert.notNull(clazz, "集合中对象类型不能为空！");
+            logger.info("SQL:" + sql);
+            List<T> list;
+            if (beanParameter != null) {
+                list = findListBeanByBean(sql, clazz, beanParameter);
+                if (list != null) {
+                    if (list.isEmpty()) return null;
+                    else {
+                        if (list.size() > 1) throw new RuntimeException("返回结果中对象集合不是唯一");
+                        else return list.get(0);
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return findBeanByArray(sql, clazz);
+            }
+        } catch (EmptyResultDataAccessException ere) {
+            return null;
+        } catch (Exception e) {
+            logger.error("not result{}", e);
+            return null;
+        }
+    }
+
+    @Override
     public List<Map<String, Object>> findListMapByArray(String sql, Object... arrayParameters) {
         try {
             Assert.hasText(sql, "sql语句不正确!");

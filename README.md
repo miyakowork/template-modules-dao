@@ -1,45 +1,37 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.6.3.RELEASE
+- AncestorDao增加findBeanByBean的方法
 #### 1.6.2.RELEASE
 - release版本发布 
-
 #### 1.6.2 更新日志
 - 使用ThreadLocal隔离多个线程会同时操作setDynamicDao的问题.
 - 注释英文说明下：因为以前用的jdk8环境下的maven打包，中文注释会报错所以以前是全英文注释，后面换成jdk7环境下就不会有问题。
 - 以后注释会慢慢改回中文
-
 #### 1.5.4 更新日志
 - 不推荐使用SimpleJdbcInsert来自增插入，会出现非预期性的结果
 - 增加了额外2个新的自增插入方法
-
 #### 1.5.3 更新日志
 - 存储AncestorDao的Map更改为线程安全的HashTable类
-
 #### 1.5.2 更新日志
 - template-utils-pojo 依赖版本改为1.2.0
-
 #### 1.5.1 更新日志
 - 排除template-modules-pojo依赖改为template-utils-pojo，且方式改为provided，需开发者自己依赖
-
 #### 1.5.0 更新日志
 - 增加 postgresql 模块支持
 - 包名变更 me.wuwenbin 改为 org.templateproject
-
 #### 1.3.1 更新日志
 - 把sql部分单独提出作为utils子项目，命名为template-utils-sql
-
 #### 1.3.0 更新日志
 - 更改多数据源注释方式，增加type参数
 - 增加多种数据库支持，目前支持mysql、h2、oracle、sqlite
 - 由于各种数据与预发不同，故在原先posterityDao之下增加集成的子类，本身改为抽象类。
 - 简化@SQLColumn的属性
-
 #### 1.2.0 更新日志
 - 更改为模块目录，由template-dao更名为template-modules-dao
 - 优化注释说明
 - bug fixed
-
 #### 1.0.0 发布日志
 - 初始版本发布
 

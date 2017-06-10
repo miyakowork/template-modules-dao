@@ -356,6 +356,17 @@ public interface AncestorDao {
      */
     <T> T findBeanByMap(final String sql, Class<T> clazz, Map<String, Object> mapParameter);
 
+
+    /**
+     * 通过bean条件参数查找bean
+     *
+     * @param sql
+     * @param clazz
+     * @param beanParameter
+     * @return
+     */
+    <T> T findBeanByBean(final String sql, Class<T> clazz, Object beanParameter);
+
     /**
      * get map collection by sql statement
      *
