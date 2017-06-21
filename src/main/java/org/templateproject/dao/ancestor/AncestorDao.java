@@ -115,7 +115,7 @@ public interface AncestorDao {
      * @param beanParameter the object of bean(eg:the property:<tt>userName</tt> should correspond to <tt>user_name</tt>, for we are not suggest to use upper case)
      * @return {@link Long} the column which increase automatically
      * @throws Exception the message of insert exception
-     * @see {@link #insertBeanAutoGenKeyOut(String, Object)}
+     * @see #insertBeanAutoGenKeyOut(String, Object)
      */
     @Deprecated
     long insertBeanGetGeneratedKey(String tableName, String keyName, Object beanParameter) throws Exception;
@@ -240,7 +240,7 @@ public interface AncestorDao {
      * @return {@link Integer[]} the affect count of statement
      * @throws Exception the exception message of execution
      */
-    int[] executeBatchByCollectionBeans(final String sql, Collection<Object> beanParameters) throws Exception;
+    int[] executeBatchByCollectionBeans(final String sql, Collection<?> beanParameters) throws Exception;
 
     /**
      * get math value by sql statement

@@ -1,6 +1,8 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.6.4.RELEASE
+- 修改批量插入Bean的方法中的Collection参数为问号类型参数形式
 #### 1.6.3.RELEASE
 - AncestorDao增加findBeanByBean的方法
 #### 1.6.2.RELEASE

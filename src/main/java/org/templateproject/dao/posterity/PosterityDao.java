@@ -275,7 +275,7 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
-    public int[] executeBatchByCollectionBeans(String sql, Collection<Object> beanParameters) throws Exception {
+    public int[] executeBatchByCollectionBeans(String sql, Collection<?> beanParameters) throws Exception {
         Assert.hasText(sql, "sql语句不正确!");
         logger.info("SQL:" + sql);
         if (beanParameters != null && !beanParameters.isEmpty()) {
