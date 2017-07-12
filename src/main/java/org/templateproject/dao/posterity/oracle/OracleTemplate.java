@@ -1,8 +1,8 @@
 package org.templateproject.dao.posterity.oracle;
 
-import org.templateproject.dao.posterity.PosterityDao;
-import me.wuwenbin.pojo.page.Page;
 import org.springframework.util.Assert;
+import org.templateproject.dao.posterity.PosterityDao;
+import org.templateproject.pojo.page.Page;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -74,7 +74,7 @@ public class OracleTemplate extends PosterityDao {
     public <T> Page findPageListBeanByMap(String sql, Class<T> clazz, Page page, Map<String, Object> mapParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count = 0;
+        long count;
         if (page.isAutoCount()) {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameter);
             page.setTotalCount((int) count);

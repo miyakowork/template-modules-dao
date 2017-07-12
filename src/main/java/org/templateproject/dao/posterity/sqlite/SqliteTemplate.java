@@ -1,8 +1,8 @@
 package org.templateproject.dao.posterity.sqlite;
 
-import org.templateproject.dao.posterity.PosterityDao;
-import me.wuwenbin.pojo.page.Page;
 import org.springframework.util.Assert;
+import org.templateproject.dao.posterity.PosterityDao;
+import org.templateproject.pojo.page.Page;
 
 import javax.sql.DataSource;
 import java.util.List;
