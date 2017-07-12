@@ -1,10 +1,10 @@
 package org.templateproject.dao.ancestor;
 
-import me.wuwenbin.pojo.page.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.templateproject.pojo.page.Page;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

@@ -1,6 +1,8 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.6.5.RELEASE
+- 修改template-utils-pojo为2.0.0.RELEASE版本
 #### 1.6.4.RELEASE
 - 修改批量插入Bean的方法中的Collection参数为问号类型参数形式
 #### 1.6.3.RELEASE

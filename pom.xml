@@ -4,7 +4,7 @@
 
     <groupId>me.wuwenbin</groupId>
     <artifactId>template-modules-dao</artifactId>
-    <version>1.6.4.RELEASE</version>
+    <version>1.6.5.RELEASE</version>
     <build>
         <plugins>
             <plugin>
@@ -57,8 +57,7 @@
         <dependency>
             <groupId>me.wuwenbin</groupId>
             <artifactId>template-utils-pojo</artifactId>
-            <version>1.4.4.RELEASE</version>
-            <scope>provided</scope>
+            <version>2.0.0.RELEASE</version>
         </dependency>
 
         <dependency>
