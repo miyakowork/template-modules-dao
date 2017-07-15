@@ -6,10 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -39,10 +36,10 @@ public abstract class PosterityDao implements AncestorDao {
 
     private DataSource dataSource;
 
-    protected JdbcTemplate jdbcTemplate;
-    protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    protected SimpleJdbcCall jdbcCall;
-    protected SimpleJdbcInsert jdbcInsert;
+    private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private SimpleJdbcCall jdbcCall;
+    private SimpleJdbcInsert jdbcInsert;
 
     public PosterityDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -52,19 +49,28 @@ public abstract class PosterityDao implements AncestorDao {
         this.jdbcCall = new SimpleJdbcCall(dataSource);
     }
 
-    protected RowMapper generateRowMapper(Class clazz) {
+    private RowMapper generateRowMapper(Class clazz) {
         return BeanPropertyRowMapper.newInstance(clazz);
     }
 
-    protected BeanPropertySqlParameterSource generateSqlParamSource(Object o) {
+    private MapSqlParameterSource generateArraySqlParamSource(String key, Object value) {
+        return new MapSqlParameterSource(key, value);
+    }
+
+    private MapSqlParameterSource generateMapSqlParamSource(Map<String, ?> m) {
+        return new MapSqlParameterSource(m);
+    }
+
+    private BeanPropertySqlParameterSource generateBeanSqlParamSource(Object o) {
         return new BeanPropertySqlParameterSource(o);
     }
+
 
     protected static String getCountSql(String nativeSQL) {
         final String countSQL = "COUNT(0)";
         Assert.hasText(nativeSQL, "sql is not correct!");
         String sql = nativeSQL.toUpperCase();
-        if (sql.indexOf("DISTINCT(") >= 0 || sql.indexOf(" GROUP BY ") >= 0) {
+        if (sql.contains("DISTINCT(") || sql.contains(" GROUP BY ")) {
             return "SELECT " + countSQL + " FROM (" + nativeSQL + ") TEMP_COUNT_TABLE";
         }
         String[] froms = sql.split(" FROM ");
@@ -139,7 +145,7 @@ public abstract class PosterityDao implements AncestorDao {
     }
 
     @Override
-    public List<Map<String, Object>> callProcedureQueryListBeans(String procedureName, Map<String, Object> inParameters, Class<?> outBeansType) {
+    public List callProcedureQueryListBeans(String procedureName, Map<String, Object> inParameters, Class<?> outBeansType) {
         jdbcCall = jdbcCall.withProcedureName(procedureName);
         if (outBeansType != null)
             jdbcCall = jdbcCall.returningResultSet("list_beans", generateRowMapper(outBeansType));
@@ -155,9 +161,18 @@ public abstract class PosterityDao implements AncestorDao {
         Assert.notNull(keyName, "自增字段名称不能为空");
         Assert.notNull(beanParameter, "对象bean不能为空");
         jdbcInsert = jdbcInsert.withTableName(tableName).usingGeneratedKeyColumns(keyName);
-        Number number = jdbcInsert.executeAndReturnKey(generateSqlParamSource(beanParameter));
+        Number number = jdbcInsert.executeAndReturnKey(generateBeanSqlParamSource(beanParameter));
         logger.info("插入生成的key：" + keyName);
         return number.longValue();
+    }
+
+    @Override
+    public int insertMapAutoGenKey(String sql, Map<String, Object> mapParameter) throws Exception {
+        Assert.hasText(sql, "sql语句不正确！");
+        Assert.notNull(mapParameter, "对象map不能为空");
+        logger.info("SQL:" + sql);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        return namedParameterJdbcTemplate.update(sql, generateMapSqlParamSource(mapParameter), keyHolder);
     }
 
     @Override
@@ -166,7 +181,17 @@ public abstract class PosterityDao implements AncestorDao {
         Assert.notNull(beanParameter, "对象bean不能为空");
         logger.info("SQL:" + sql);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        return namedParameterJdbcTemplate.update(sql, generateSqlParamSource(beanParameter), keyHolder);
+        return namedParameterJdbcTemplate.update(sql, generateBeanSqlParamSource(beanParameter), keyHolder);
+    }
+
+    @Override
+    public long insertMapAutoGenKeyOut(String sql, Map<String, Object> mapParameter) throws Exception {
+        Assert.hasText(sql, "sql语句不正确！");
+        Assert.notNull(mapParameter, "对象bean不能为空");
+        logger.info("SQL:" + sql);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(sql, generateMapSqlParamSource(mapParameter), keyHolder);
+        return keyHolder.getKey().longValue();
     }
 
     @Override
@@ -175,16 +200,22 @@ public abstract class PosterityDao implements AncestorDao {
         Assert.notNull(beanParameter, "对象bean不能为空");
         logger.info("SQL:" + sql);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(sql, generateSqlParamSource(beanParameter), keyHolder);
+        namedParameterJdbcTemplate.update(sql, generateBeanSqlParamSource(beanParameter), keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public Map<String, Object> insertMapAutoGenKeyOutBean(String insertSQL, Map<String, Object> mapParameter, String tableName) throws Exception {
+        long key = insertMapAutoGenKeyOut(insertSQL, mapParameter);
+        String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
+        return findMapByArray(sql, key);
     }
 
     @Override
     public <T> T insertBeanAutoGenKeyOutBean(String insertSQL, T beaParameter, Class<T> clazz, String tableName) throws Exception {
         long key = insertBeanAutoGenKeyOut(insertSQL, beaParameter);
         String sql = "SELECT * FROM " + tableName + " WHERE id = ?";
-        T bean = findBeanByArray(sql, clazz, key);
-        return bean;
+        return findBeanByArray(sql, clazz, key);
     }
 
     @Override
@@ -233,7 +264,7 @@ public abstract class PosterityDao implements AncestorDao {
         logger.info("SQL:" + sql);
         int affectCount;
         if (beanParameter != null) {
-            affectCount = namedParameterJdbcTemplate.update(sql, generateSqlParamSource(beanParameter));
+            affectCount = namedParameterJdbcTemplate.update(sql, generateBeanSqlParamSource(beanParameter));
         } else {
             affectCount = executeArray(sql);
         }
@@ -241,8 +272,9 @@ public abstract class PosterityDao implements AncestorDao {
         return affectCount;
     }
 
+    @SafeVarargs
     @Override
-    public int[] executeBatchByArrayMaps(String sql, Map<String, Object>... mapParameters) throws Exception {
+    public final int[] executeBatchByArrayMaps(String sql, Map<String, Object>... mapParameters) throws Exception {
         Assert.hasText(sql, "sql语句不正确!");
         logger.info("SQL:" + sql);
         if (mapParameters != null && mapParameters.length > 0) {
@@ -378,7 +410,7 @@ public abstract class PosterityDao implements AncestorDao {
             Assert.hasText(sql, "sql语句不正确!");
             logger.info("SQL:" + sql);
             if (beanParameter != null) {
-                return namedParameterJdbcTemplate.queryForObject(sql, generateSqlParamSource(beanParameter), Number.class);
+                return namedParameterJdbcTemplate.queryForObject(sql, generateBeanSqlParamSource(beanParameter), Number.class);
             } else {
                 return findNumberByArray(sql);
             }
@@ -396,7 +428,7 @@ public abstract class PosterityDao implements AncestorDao {
             Assert.hasText(sql, "sql语句不正确!");
             logger.info("SQL:" + sql);
             if (beanParameter != null) {
-                Number n = namedParameterJdbcTemplate.queryForObject(sql, generateSqlParamSource(beanParameter), numberClass);
+                Number n = namedParameterJdbcTemplate.queryForObject(sql, generateBeanSqlParamSource(beanParameter), numberClass);
                 if (n == null)
                     return (T) NumberUtils.parseNumber("0", numberClass);
                 else return (T) n;
@@ -593,7 +625,7 @@ public abstract class PosterityDao implements AncestorDao {
             logger.info("SQL:" + sql);
             List list;
             if (mapParameter != null && mapParameter.size() > 0) {
-                list = jdbcTemplate.query(sql, generateRowMapper(clazz), mapParameter);
+                list = namedParameterJdbcTemplate.query(sql, mapParameter, generateRowMapper(clazz));
             } else {
                 list = findListBeanByArray(sql, clazz);
             }
@@ -615,7 +647,7 @@ public abstract class PosterityDao implements AncestorDao {
             logger.info("SQL:" + sql);
             List list;
             if (beanParameter != null) {
-                list = namedParameterJdbcTemplate.query(sql, generateSqlParamSource(beanParameter), generateRowMapper(clazz));
+                list = namedParameterJdbcTemplate.query(sql, generateBeanSqlParamSource(beanParameter), generateRowMapper(clazz));
             } else {
                 list = findListBeanByArray(sql, clazz);
             }

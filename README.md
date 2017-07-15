@@ -1,6 +1,10 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.7.0.RELEASE
+- 修改dao中的一些方法
+- 增加dao方：法insertxxxGenKey类的方法
+- 修正dao中xxxxMap某些方法的bug
 #### 1.6.5.RELEASE
 - 修改template-utils-pojo为2.0.0.RELEASE版本
 #### 1.6.4.RELEASE

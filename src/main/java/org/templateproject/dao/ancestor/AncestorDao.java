@@ -104,7 +104,7 @@ public interface AncestorDao {
      * @param outBeansType  the returned beanList type
      * @return {@link List} beanList collection
      */
-    List<Map<String, Object>> callProcedureQueryListBeans(String procedureName, Map<String, Object> inParameters, Class<?> outBeansType);
+    List callProcedureQueryListBeans(String procedureName, Map<String, Object> inParameters, Class<?> outBeansType);
 
     /**
      * <tt>INSERT</tt> values with returned <tt>PK</tt> value
@@ -134,38 +134,70 @@ public interface AncestorDao {
     long insertMapGetGeneratedKey(String tableName, String keyName, Map<String, Object> mapParameter) throws Exception;
 
     /**
-     * 插入bean返回插入的影响条数
+     * 根据所给语句以及map级的sql类型参数，生成key
      *
-     * @param sql
-     * @param beanParameter
-     * @param <T>
-     * @return
-     * @throws Exception
+     * @param sql          sql语句
+     * @param mapParameter map类型的参数
+     * @return 插入影响的条数
+     * @throws Exception 插入的异常信息
+     */
+    int insertMapAutoGenKey(String sql, Map<String, Object> mapParameter) throws Exception;
+
+    /**
+     * 插入bean返回插入的影响条数，自动生成key
+     *
+     * @param <T>           匹配的类型
+     * @param sql           插入sql语句
+     * @param beanParameter bean类型参数
+     * @return 插入影响的条数
+     * @throws Exception 插入之中发生的异常
      */
     <T> int insertBeanAutoGenKey(String sql, T beanParameter) throws Exception;
 
     /**
+     * 插入Map返回插入的主键
+     *
+     * @param sql          插入的语句
+     * @param mapParameter map类型的参数，对应sql中的占位符
+     * @return 自动生成的主键
+     * @throws Exception 插入时发生的异常
+     */
+    long insertMapAutoGenKeyOut(String sql, Map<String, Object> mapParameter) throws Exception;
+
+    /**
      * 插入bean返回插入的主键
      *
-     * @param sql
-     * @param beanParameter
-     * @param <T>
-     * @return
-     * @throws Exception
+     * @param sql           插入的语句
+     * @param beanParameter bean对象类型的参数，对应sql中的占位符
+     * @param <T>           匹配对象的泛型类型
+     * @return 自动生成的主键
+     * @throws Exception 插入时发生的异常
      */
     <T> long insertBeanAutoGenKeyOut(String sql, T beanParameter) throws Exception;
 
     /**
-     * 插入一条bean记录，返回插入记录（含主键）
-     * 注：此方法要求主键列明必须为[id]
+     * 插入一条Map记录，返回插入的记录（含主键）
+     * 注：此方法要求主键列名必须为[id]
      *
-     * @param insertSQL
-     * @param beaParameter
-     * @param clazz
-     * @param tableName
-     * @param <T>
-     * @return
-     * @throws Exception
+     * @param insertSQL    插入语句
+     * @param mapParameter map参数
+     * @param tableName    表名
+     * @return 所有字段组装成的map对象
+     * @throws Exception 插入时发生的异常
+     */
+    Map<String, Object> insertMapAutoGenKeyOutBean(String insertSQL, Map<String, Object> mapParameter, String tableName) throws Exception;
+
+    /**
+     * 插入一条bean记录，返回插入记录（含主键）
+     * 注：此方法要求主键列名必须为[id]
+     *
+     * @param insertSQL    插入语句
+     * @param beaParameter bena类型参数
+     * @param clazz        对象匹配的class类型
+     * @param tableName    表名
+     * @param <T>          对象匹配的泛型类型
+     * @return 插入的对象
+     * @throws Exception 插入时发生的异常
      */
     <T> T insertBeanAutoGenKeyOutBean(String insertSQL, T beaParameter, Class<T> clazz, String tableName) throws Exception;
 
@@ -360,9 +392,9 @@ public interface AncestorDao {
     /**
      * 通过bean条件参数查找bean
      *
-     * @param sql
-     * @param clazz
-     * @param beanParameter
+     * @param sql           查询的sql语句
+     * @param clazz         需要匹配的对象class
+     * @param beanParameter sql中的参数
      * @return
      */
     <T> T findBeanByBean(final String sql, Class<T> clazz, Object beanParameter);
@@ -399,13 +431,13 @@ public interface AncestorDao {
     /**
      * get object list by sql statement,assigning object type
      *
+     * @param <T>          refer to second param
      * @param sql          statement of database
      * @param clazz        return object type
      * @param mapParameter params in map
-     * @param <T>          refer to second param
      * @return {@link List<T>}
      */
-    <T> List<T> findListBeanByMap(final String sql, Class<T> clazz, Map<String, Object> mapParameter);
+    <T> List findListBeanByMap(final String sql, Class<T> clazz, Map<String, Object> mapParameter);
 
     /**
      * get object list by sql statement,assigning object type
