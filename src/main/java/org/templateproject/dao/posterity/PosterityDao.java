@@ -300,7 +300,7 @@ public abstract class PosterityDao implements AncestorDao {
         Assert.hasText(sql, "sql语句不正确!");
         logger.info("SQL:" + sql);
         if (mapParameters != null && !mapParameters.isEmpty()) {
-            Map<String, Object>[] mps = (Map<String, Object>[]) mapParameters.toArray(new Map[mapParameters.size()]);
+            Map[] mps =  mapParameters.toArray(new Map[mapParameters.size()]);
             return namedParameterJdbcTemplate.batchUpdate(sql, mps);
         }
         return null;
@@ -601,7 +601,7 @@ public abstract class PosterityDao implements AncestorDao {
             Assert.hasText(sql, "sql语句不正确!");
             Assert.notNull(clazz, "集合中对象类型不能为空!");
             logger.info("SQL:" + sql);
-            List list;
+            List<T> list;
             if (arrayParameters != null && arrayParameters.length > 0) {
                 list = jdbcTemplate.query(sql, generateRowMapper(clazz), arrayParameters);
             } else {
@@ -623,9 +623,9 @@ public abstract class PosterityDao implements AncestorDao {
             Assert.hasText(sql, "sql语句不正确!");
             Assert.notNull(clazz, "集合中对象类型不能为空!");
             logger.info("SQL:" + sql);
-            List list;
+            List<T> list;
             if (mapParameter != null && mapParameter.size() > 0) {
-                list = namedParameterJdbcTemplate.query(sql, mapParameter, generateRowMapper(clazz));
+                list = namedParameterJdbcTemplate.queryForList(sql, mapParameter, clazz);
             } else {
                 list = findListBeanByArray(sql, clazz);
             }
@@ -645,9 +645,9 @@ public abstract class PosterityDao implements AncestorDao {
             Assert.hasText(sql, "sql语句不正确!");
             Assert.notNull(clazz, "集合中对象类型不能为空!");
             logger.info("SQL:" + sql);
-            List list;
+            List<T> list;
             if (beanParameter != null) {
-                list = namedParameterJdbcTemplate.query(sql, generateBeanSqlParamSource(beanParameter), generateRowMapper(clazz));
+                list = namedParameterJdbcTemplate.queryForList(sql,generateBeanSqlParamSource(beanParameter),clazz);
             } else {
                 list = findListBeanByArray(sql, clazz);
             }
@@ -669,12 +669,12 @@ public abstract class PosterityDao implements AncestorDao {
     public abstract Page findPageListMapByMap(String sql, Page page, Map<String, Object> mapParameter);
 
     @Override
-    public abstract <T> Page findPageListBeanByArray(String sql, Class<T> clazz, Page page, Object... arrayParameters);
+    public abstract <T> Page<T> findPageListBeanByArray(String sql, Class<T> clazz, Page<T> page, Object... arrayParameters);
 
     @Override
-    public abstract <T> Page findPageListBeanByMap(String sql, Class<T> clazz, Page page, Map<String, Object> mapParameter);
+    public abstract <T> Page<T> findPageListBeanByMap(String sql, Class<T> clazz, Page<T> page, Map<String, Object> mapParameter);
 
     @Override
-    public abstract <T> Page findPageListBeanByBean(String sql, Class<T> clazz, Page page, Object beanParameter);
+    public abstract <T> Page<T> findPageListBeanByBean(String sql, Class<T> clazz, Page<T> page, Object beanParameter);
 
 }

@@ -420,13 +420,13 @@ public interface AncestorDao {
     /**
      * get object list by sql statement,assigning object type
      *
+     * @param <T>             refer to second param
      * @param sql             statement of database
      * @param clazz           return object type
      * @param arrayParameters params in array
-     * @param <T>             refer to second param
      * @return {@link List<T>}
      */
-    <T> List<T> findListBeanByArray(final String sql, Class<T> clazz, Object... arrayParameters);
+    <T> List findListBeanByArray(final String sql, Class<T> clazz, Object... arrayParameters);
 
     /**
      * get object list by sql statement,assigning object type
@@ -437,7 +437,7 @@ public interface AncestorDao {
      * @param mapParameter params in map
      * @return {@link List<T>}
      */
-    <T> List findListBeanByMap(final String sql, Class<T> clazz, Map<String, Object> mapParameter);
+    <T> List<T> findListBeanByMap(final String sql, Class<T> clazz, Map<String, Object> mapParameter);
 
     /**
      * get object list by sql statement,assigning object type
@@ -479,7 +479,7 @@ public interface AncestorDao {
      * @param arrayParameters params in array
      * @return {@link Page}
      */
-    <T> Page findPageListBeanByArray(final String sql, Class<T> clazz, Page page, Object... arrayParameters);
+    <T> Page<T> findPageListBeanByArray(final String sql, Class<T> clazz, Page<T> page, Object... arrayParameters);
 
     /**
      * common page method,getting <tt>List&lt;Map&gt;</tt> to result in current page object
@@ -490,7 +490,7 @@ public interface AncestorDao {
      * @param mapParameter params in map
      * @return {@link Page}
      */
-    <T> Page findPageListBeanByMap(final String sql, Class<T> clazz, Page page, Map<String, Object> mapParameter);
+    <T> Page<T> findPageListBeanByMap(final String sql, Class<T> clazz, Page<T> page, Map<String, Object> mapParameter);
 
     /**
      * common page method,getting <tt>List&lt;Map&gt;</tt> to result in current page object
@@ -501,6 +501,6 @@ public interface AncestorDao {
      * @param beanParameter params in bean
      * @return {@link Page}
      */
-    <T> Page findPageListBeanByBean(final String sql, Class<T> clazz, Page page, Object beanParameter);
+    <T> Page<T> findPageListBeanByBean(final String sql, Class<T> clazz, Page<T> page, Object beanParameter);
 
 }

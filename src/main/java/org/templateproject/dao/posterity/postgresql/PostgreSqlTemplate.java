@@ -27,10 +27,24 @@ public final class PostgreSqlTemplate extends PosterityDao {
         return querySql;
     }
 
-    public Page findPageListBeanByArray(final String sql, Class clazz, Page page, Object... arrayParameters) {
+
+    public Page findPageListMapByArray(final String sql, Page page, Object... arrayParameters) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count = 0;
+        long count;
+        if (page.isAutoCount()) {
+            count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
+            page.setTotalCount((int) count);
+        }
+        List list = findListMapByArray(getSqlOfPostgresql(sql, page), arrayParameters);
+        page.setRawResult(list);
+        return page;
+    }
+
+    public <T> Page<T> findPageListBeanByArray(String sql, Class<T> clazz, Page<T> page, Object... arrayParameters) {
+        Assert.notNull(page, "分页信息不能为空");
+        Assert.hasText(sql, "sql语句不正确!");
+        long count;
         if (page.isAutoCount()) {
             count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
             page.setTotalCount((int) count);
@@ -40,21 +54,8 @@ public final class PostgreSqlTemplate extends PosterityDao {
         return page;
     }
 
-    public Page findPageListMapByArray(final String sql, Page page, Object... arrayParameters) {
-        Assert.notNull(page, "分页信息不能为空");
-        Assert.hasText(sql, "sql语句不正确!");
-        long count = 0;
-        if (page.isAutoCount()) {
-            count = queryNumberByArray(getCountSql(sql), Long.class, arrayParameters);
-            page.setTotalCount((int) count);
-        }
-        List list = findListMapByArray(getSqlOfPostgresql(sql, page), arrayParameters);
-        page.setResult(list);
-        return page;
-    }
 
-
-    public <T> Page findPageListBeanByBean(String sql, Class<T> clazz, Page page, Object beanParameters) {
+    public <T> Page<T> findPageListBeanByBean(String sql, Class<T> clazz, Page<T> page, Object beanParameters) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
         long count = 0;
@@ -67,10 +68,10 @@ public final class PostgreSqlTemplate extends PosterityDao {
         return page;
     }
 
-    public <T> Page findPageListBeanByMap(String sql, Class<T> clazz, Page page, Map<String, Object> mapParameters) {
+    public <T> Page<T> findPageListBeanByMap(String sql, Class<T> clazz, Page<T> page, Map<String, Object> mapParameters) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
-        long count = 0;
+        long count ;
         if (page.isAutoCount()) {
             count = queryNumberByMap(getCountSql(sql), Long.class, mapParameters);
             page.setTotalCount((int) count);

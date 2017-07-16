@@ -37,7 +37,7 @@ public class MysqlTemplate extends PosterityDao {
             page.setTotalCount((int) count);
         }
         List<Map<String, Object>> list = findListMapByArray(getSqlOfMySQL(sql, page), arrayParameters);
-        page.setResult(list);
+        page.setRawResult(list);
         return page;
     }
 
@@ -56,7 +56,7 @@ public class MysqlTemplate extends PosterityDao {
     }
 
     @Override
-    public <T> Page findPageListBeanByArray(String sql, Class<T> clazz, Page page, Object... arrayParameters) {
+    public <T> Page<T> findPageListBeanByArray(String sql, Class<T> clazz, Page<T> page, Object... arrayParameters) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
         long count;
@@ -70,7 +70,7 @@ public class MysqlTemplate extends PosterityDao {
     }
 
     @Override
-    public <T> Page findPageListBeanByMap(String sql, Class<T> clazz, Page page, Map<String, Object> mapParameter) {
+    public <T> Page<T> findPageListBeanByMap(String sql, Class<T> clazz, Page<T> page, Map<String, Object> mapParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
         long count;
@@ -84,7 +84,7 @@ public class MysqlTemplate extends PosterityDao {
     }
 
     @Override
-    public <T> Page findPageListBeanByBean(String sql, Class<T> clazz, Page page, Object beanParameter) {
+    public <T> Page<T> findPageListBeanByBean(String sql, Class<T> clazz, Page<T> page, Object beanParameter) {
         Assert.notNull(page, "分页信息不能为空");
         Assert.hasText(sql, "sql语句不正确!");
         long count;
