@@ -1,6 +1,9 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 3.0.0.RELEASE
+- template框架所有项目更新为同一版本，以便于使用和管理维护
+- 未做任何改动，仅变动版本号
 #### 1.7.4.RELEASE
 - 修复findListBeanByMap泛型方法错误
 #### 1.7.3.RELEASE
