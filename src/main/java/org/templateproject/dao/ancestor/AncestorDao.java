@@ -426,7 +426,7 @@ public interface AncestorDao {
      * @param arrayParameters params in array
      * @return {@link List<T>}
      */
-    <T> List findListBeanByArray(final String sql, Class<T> clazz, Object... arrayParameters);
+    <T> List<T> findListBeanByArray(final String sql, Class<T> clazz, Object... arrayParameters);
 
     /**
      * get object list by sql statement,assigning object type
