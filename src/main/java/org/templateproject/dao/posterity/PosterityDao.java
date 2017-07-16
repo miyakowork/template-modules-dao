@@ -625,7 +625,7 @@ public abstract class PosterityDao implements AncestorDao {
             logger.info("SQL:" + sql);
             List<T> list;
             if (mapParameter != null && mapParameter.size() > 0) {
-                list = namedParameterJdbcTemplate.queryForList(sql, mapParameter, clazz);
+                list = namedParameterJdbcTemplate.query(sql,mapParameter,generateRowMapper(clazz));
             } else {
                 list = findListBeanByArray(sql, clazz);
             }
