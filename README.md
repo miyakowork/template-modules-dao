@@ -1,6 +1,9 @@
 # template-modules-dao
 template-projects中的关系型数据库dao部分封装 
 ## 更新日志 ## 
+#### 1.7.2.RELEASE
+- 更新相关泛型
+- 更新pom依赖为最新
 #### 1.7.1.RELEASE
 - 更新pom中的依赖为最新
 #### 1.7.0.RELEASE

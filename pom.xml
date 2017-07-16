@@ -4,7 +4,7 @@
 
     <groupId>me.wuwenbin</groupId>
     <artifactId>template-modules-dao</artifactId>
-    <version>1.7.1.RELEASE</version>
+    <version>1.7.2.RELEASE</version>
     <build>
         <plugins>
             <plugin>
