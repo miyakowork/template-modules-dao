@@ -5,7 +5,7 @@
     <parent>
         <groupId>me.wuwenbin</groupId>
         <artifactId>template-parents-utils</artifactId>
-        <version>3.0.0.RELEASE</version>
+        <version>3.0.1.RELEASE</version>
     </parent>
 
     <artifactId>template-modules-dao</artifactId>
